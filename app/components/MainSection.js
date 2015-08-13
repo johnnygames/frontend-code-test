@@ -1,4 +1,4 @@
-var React = require('react');
+var React = require('react/addons');
 var $ = require('jquery');
 var RecipeList = require('./RecipeList.js');
 var InputField = require('./InputField.js');
@@ -9,14 +9,14 @@ var MainSection = React.createClass({
     return {
       recipes: [],
       selectedRecipeIndex: {},
-      totalIngredients: {}
+      totalIngredients: {},
+      checked: {0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7:false}
     }
   },
   componentDidMount: function () {
     var self = this;
-    console.log(JSON.parse(localStorage.getItem('recipeListPersist')).recipes, 'mounting');
+    localStorage.setItem('checkedStatus', JSON.stringify(this.state.checked));
     if (!JSON.parse(localStorage.getItem('recipeListPersist')).recipes.length > 0) {
-      console.log('hi');
       $.getJSON('recipes.json', function (data) {
         self.setState({
           recipes: data
@@ -25,6 +25,11 @@ var MainSection = React.createClass({
     } else {
       self.setState({
         recipes: JSON.parse(localStorage.getItem('recipeListPersist')).recipes
+      });
+    }
+    if(!!JSON.parse(localStorage.getItem('totalIngredientList')).list) {
+      self.setState({
+        totalIngredients: JSON.parse(localStorage.getItem('totalIngredientList')).list
       });
     }
   },
@@ -46,14 +51,30 @@ var MainSection = React.createClass({
     localStorage.setItem('textInput', JSON.stringify({textInputLocal: input}));
   },
   updateIngredients: function (input, ingredientArray) {
+    //If the recipe that is clicked on already exists in the list aka is being currently UNSELECTED
     if (this.state.selectedRecipeIndex[input]) {
+      //If the clicked on recipe is the only one in the list just remove all
+      if (Object.keys(this.state.selectedRecipeIndex).length === 1) {
+        var currentIngredientsOne = this.state.totalIngredients;
+        for (var k = 0; k < ingredientArray.length; k++) {
+          delete currentIngredientsOne[ingredientArray[k]];
+        }
+      }
       var currentIngredients = this.state.totalIngredients;
+      //Loop through here necessary to check if other recipes require an ingredient we're supposed to get rid of
       for (var i = 0; i < ingredientArray.length; i++) {
-        delete currentIngredients[ingredientArray[i]];
+        for (var j = 0; j < Object.keys(this.state.selectedRecipeIndex).length; j++) {
+          if (this.state.recipes[j].ingredients.indexOf(ingredientArray[i]) >= 0) {
+            continue;
+          } else {
+            delete currentIngredients[ingredientArray[i]];
+          }
+        }
       }
       this.setState({
         totalIngredients: currentIngredients
       })
+      localStorage.setItem('totalIngredientList', JSON.stringify({list: currentIngredients}));
     } else {
         var ingredientObject = this.state.totalIngredients;
         for (var i = 0; i < ingredientArray.length; i++) {
@@ -62,10 +83,15 @@ var MainSection = React.createClass({
         this.setState({
           totalIngredients: ingredientObject
         })
+        localStorage.setItem('totalIngredientList', JSON.stringify({list: ingredientObject}));
     }
   },
   updateSelection: function (input) {
     var updatedSelection = this.state.selectedRecipeIndex;
+    var newCheckedState = React.addons.update(this.state.checked, {
+      input: {$set: !this.state.checked[input]}
+    });
+    this.setState(newCheckedState);
     if (this.state.selectedRecipeIndex[input]) {
       delete updatedSelection[input];
       this.setState({
@@ -91,7 +117,10 @@ var MainSection = React.createClass({
           handleSelection={this.handleRecipeSelection}
           selectedRecipes={this.state.selectedRecipeIndex}
         />
-        <CombinationIngredientList comboIngredients={this.state.totalIngredients} />
+        <CombinationIngredientList
+          comboIngredients={this.state.totalIngredients}
+          checked={this.state.checked}
+        />
       </div>
     )
   }

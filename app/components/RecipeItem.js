@@ -3,15 +3,19 @@ var IngredientList = require('./IngredientList.js');
 
 var RecipeItem = React.createClass({
   handleClick: function (ingredients, index) {
+    var holder = !JSON.parse(localStorage.getItem('checkedStatus'))[index];
+    localStorage.setItem('checkedStatus', JSON.stringify({index: holder}));
     this.props.nextLevelProp(index, ingredients);
   },
   render: function () {
+    var index = this.props.indexRecipe;
+    var checkedStatus = JSON.parse(localStorage.getItem('checkedStatus'))[index] || false;
     return (
       <span>
         <input
           type="checkbox"
           onChange={this.handleClick.bind(null, this.props.recipeInfo.ingredients, this.props.indexRecipe)}
-          defaultChecked={false}
+          checked={checkedStatus}
         >
         </input>
       <h4 ref={this.props.indexRecipe}>
