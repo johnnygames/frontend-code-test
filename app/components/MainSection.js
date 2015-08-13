@@ -27,12 +27,11 @@ var MainSection = React.createClass({
    });
   },
   handleRecipeSelection: function (input) {
-    var updatedSelection = [];
+    var updatedSelection = this.state.selectedRecipeIndex;
     updatedSelection.push(input);
     this.setState({
       selectedRecipeIndex: updatedSelection
     })
-    console.log(this.state.selectedRecipeIndex);
   },
   render: function () {
     return (
