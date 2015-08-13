@@ -1,0 +1,22 @@
+var React = require('react');
+var RecipeItem = require('./RecipeItem.js');
+
+var RecipeList = React.createClass({
+  render: function () {
+    console.log(this.props, 'in recipelist');
+    return (
+      <div>
+        <ol>
+          {this.props.recipes.map(function (recipe, index) {
+            return (
+              <li><RecipeItem recipeInfo={recipe} indexRecipe={index} /></li>
+            )
+         })
+          }
+        </ol>
+      </div>
+    );
+  }
+});
+
+module.exports = RecipeList;

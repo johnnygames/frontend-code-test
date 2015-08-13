@@ -6,7 +6,8 @@ var InputField = require('./InputField.js');
 var MainSection = React.createClass({
   getInitialState: function () {
     return {
-      recipes: []
+      recipes: [],
+      selectedRecipeIndex: []
     }
   },
   componentDidMount: function () {
@@ -18,7 +19,6 @@ var MainSection = React.createClass({
     });
   },
   handleInput: function (input) {
-   console.log(input);
    var filteredRecipes = this.state.recipes.filter(function (recipe) {
      return recipe.ingredients.indexOf(input) >= 0;
    });
@@ -26,11 +26,23 @@ var MainSection = React.createClass({
      recipes: filteredRecipes
    });
   },
+  handleRecipeSelection: function (input) {
+    var updatedSelection = [];
+    updatedSelection.push(input);
+    this.setState({
+      selectedRecipeIndex: updatedSelection
+    })
+    console.log(this.state.selectedRecipeIndex);
+  },
   render: function () {
     return (
       <div>
         <InputField handleInput={this.handleInput} />
-        <RecipeList recipes={this.state.recipes} />
+        <RecipeList
+          recipes={this.state.recipes}
+          handleSelection={this.handleRecipeSelection}
+          selectedRecipes={this.state.selectedRecipeIndex}
+        />
       </div>
     )
   }
