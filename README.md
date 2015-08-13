@@ -3,6 +3,12 @@ DataScience's Frontend Code Test
 
 This is an at-home exercise that we use as part of our standard interview process for frontend and full-stack developers.
 
+## John Games' Installation Instructions!
+
+* Install webpack with 'npm install -g webpack'
+* Run 'npm install' to grab all the dependencies
+* Run 'npm run dev' to boot up the dev server and view at localhost:8080
+
 ## Instructions
 
 * Clone this repo
