@@ -14,19 +14,36 @@ var MainSection = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    $.getJSON('recipes.json', function (data) {
-      self.setState({
-        recipes: data
+    console.log(JSON.parse(localStorage.getItem('recipeListPersist')).recipes, 'mounting');
+    if (!JSON.parse(localStorage.getItem('recipeListPersist')).recipes.length > 0) {
+      console.log('hi');
+      $.getJSON('recipes.json', function (data) {
+        self.setState({
+          recipes: data
+        });
       });
-    });
+    } else {
+      self.setState({
+        recipes: JSON.parse(localStorage.getItem('recipeListPersist')).recipes
+      });
+    }
   },
   handleInput: function (input) {
+    if (!input) {
+      $.getJSON('recipes.json', function (data) {
+        this.setState({
+          recipes: data
+        });
+      }.bind(this));
+    }
     var filteredRecipes = this.state.recipes.filter(function (recipe) {
       return recipe.ingredients.indexOf(input) >= 0;
     });
     this.setState({
       recipes: filteredRecipes
     });
+    localStorage.setItem('recipeListPersist', JSON.stringify({recipes: filteredRecipes}));
+    localStorage.setItem('textInput', JSON.stringify({textInputLocal: input}));
   },
   updateIngredients: function (input, ingredientArray) {
     if (this.state.selectedRecipeIndex[input]) {
@@ -68,7 +85,7 @@ var MainSection = React.createClass({
   render: function () {
     return (
       <div>
-        <InputField handleInput={this.handleInput} />
+        <InputField handleInput={this.handleInput} textInputPersist={this.state.textInput}/>
         <RecipeList
           recipes={this.state.recipes}
           handleSelection={this.handleRecipeSelection}

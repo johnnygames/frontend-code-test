@@ -1,6 +1,9 @@
 var React = require('react');
 
 var InputField = React.createClass({
+  componentDidMount: function () {
+    document.getElementById('ingredientToFilter').value = JSON.parse(localStorage.getItem('textInput')).textInputLocal;
+  },
   handleIngredientInput: function (e) {
     e.preventDefault();
     var input = document.getElementById('ingredientToFilter').value;
