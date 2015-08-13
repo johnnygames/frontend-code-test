@@ -23,7 +23,7 @@ var RecipeList = React.createClass({
                   selectionIndex={recipeIndex}
                   onClick={self.showIngredients.bind(null, recipe.ingredients)}
                 />
-              </li>
+            </li>
             )
           })
           }
