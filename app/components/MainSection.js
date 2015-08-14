@@ -34,19 +34,32 @@ var MainSection = React.createClass({
     }
   },
   handleInput: function (input) {
+    var self = this;
     if (!input) {
       $.getJSON('recipes.json', function (data) {
         this.setState({
           recipes: data
         });
       }.bind(this));
+      this.getInitialState();
     }
-    var filteredRecipes = this.state.recipes.filter(function (recipe) {
+
+    var filteredRecipes = this.state.recipes.filter(function (recipe, index) {
       return recipe.ingredients.indexOf(input) >= 0;
     });
+    if (filteredRecipes.length > 0) {
+      this.setState({
+        recipes: filteredRecipes
+      });
+    }
     this.setState({
-      recipes: filteredRecipes
+      totalIngredients: {}
     });
+    this.setState({
+      checked: {0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false}
+    });
+    localStorage.setItem('checkedStatus', JSON.stringify(this.state.checked));
+    localStorage.setItem('ingredientListTotal', JSON.stringify({list: {}}));
     localStorage.setItem('recipeListPersist', JSON.stringify({recipes: filteredRecipes}));
     localStorage.setItem('textInput', JSON.stringify({textInputLocal: input}));
   },
