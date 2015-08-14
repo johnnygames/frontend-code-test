@@ -1,5 +1,6 @@
 var React = require('react/addons');
 var $ = require('jquery');
+var _ = require('underscore');
 var RecipeList = require('./RecipeList.js');
 var InputField = require('./InputField.js');
 var CombinationIngredientList = require('./CombinationIngredientList.js');
@@ -10,13 +11,11 @@ var MainSection = React.createClass({
       recipes: [],
       selectedRecipeIndex: {},
       totalIngredients: {},
-      checked: {item0: false, item1: false, item2: false, item3: false, item4: false, item5: false, item6: false, item7:false}
+      checked: {0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7:false}
     }
   },
   componentDidMount: function () {
     var self = this;
-    localStorage.setItem('checkedStatus', this.state.checked);
-    localStorage.setItem('checkedStatus', JSON.stringify(this.state.checked));
     if (!JSON.parse(localStorage.getItem('recipeListPersist')).recipes.length > 0) {
       $.getJSON('recipes.json', function (data) {
         self.setState({
@@ -53,22 +52,42 @@ var MainSection = React.createClass({
   },
   updateIngredients: function (input, ingredientArray) {
     //If the recipe that is clicked on already exists in the list aka is being currently UNSELECTED
-    if (this.state.selectedRecipeIndex[input]) {
+    if (JSON.parse(localStorage.getItem('checkedStatus'))[input]) {
+      console.log(JSON.parse(localStorage.getItem('checkedStatus'))[input], 'is this true of false, first test');
       //If the clicked on recipe is the only one in the list just remove all
-      if (Object.keys(this.state.selectedRecipeIndex).length === 1) {
-        var currentIngredientsOne = this.state.totalIngredients;
-        for (var k = 0; k < ingredientArray.length; k++) {
-          delete currentIngredientsOne[ingredientArray[k]];
+      var checkCounter = 0;
+      for (var key in JSON.parse(localStorage.getItem('checkedStatus'))) {
+        if (JSON.parse(localStorage.getItem('checkedStatus'))[key]) {
+          console.log('yay true');
+          checkCounter++;
         }
       }
+      if (checkCounter <= 1) {
+        console.log(checkCounter, 'length of 1');
+        var currentIngredientsOne = this.state.totalIngredients;
+        var currentIngredientsPersistent = JSON.parse(localStorage.getItem('totalIngredientList')).list;
+        console.log(currentIngredientsPersistent, 'persistent');
+        for (var k = 0; k < ingredientArray.length; k++) {
+          delete currentIngredientsOne[ingredientArray[k]];
+          //delete currentIngredientsPersistent[ingredientArray[k]];
+        }
+        localStorage.setItem('totalIngredientList', JSON.stringify({list: currentIngredients}));
+        return;
+      }
+      console.log(checkCounter, 'length greater than 1');
       var currentIngredients = this.state.totalIngredients;
       //Loop through here necessary to check if other recipes require an ingredient we're supposed to get rid of
       for (var i = 0; i < ingredientArray.length; i++) {
-        for (var j = 0; j < Object.keys(this.state.selectedRecipeIndex).length; j++) {
-          if (this.state.recipes[j].ingredients.indexOf(ingredientArray[i]) >= 0) {
-            continue;
+        console.log('do we get into this for loop');
+        for (var j = 0; j < Object.keys(JSON.parse(localStorage.getItem('checkedStatus'))).length; j++) {
+          if (JSON.parse(localStorage.getItem('checkedStatus'))[j]) {
+           if (this.state.recipes[j].ingredients.indexOf(ingredientArray[i]) >= 0) {
+             console.log(this.state.recipes[j].ingredients, 'j ', j);
+             continue;
           } else {
             delete currentIngredients[ingredientArray[i]];
+            //            delete currentIngredientsPersistent[ingredientArray[j]];
+            }
           }
         }
       }
@@ -77,6 +96,7 @@ var MainSection = React.createClass({
       })
       localStorage.setItem('totalIngredientList', JSON.stringify({list: currentIngredients}));
     } else {
+      console.log('this is the else statement, if the checkedStatus was false');
         var ingredientObject = this.state.totalIngredients;
         for (var i = 0; i < ingredientArray.length; i++) {
           ingredientObject[ingredientArray[i]] = true;
@@ -88,14 +108,13 @@ var MainSection = React.createClass({
     }
   },
   updateSelection: function (input) {
+    var newUnderSelection = _.extend({}, JSON.parse(localStorage.getItem('checkedStatus')));
+    newUnderSelection[input] = !JSON.parse(localStorage.getItem('checkedStatus'))[input];
     var updatedSelection = this.state.selectedRecipeIndex;
-    var newCheckedState = React.addons.update(this.state.checked, {
-      input: {$set: !this.state.checked[input]}
+    this.setState({
+      checked: newUnderSelection
     });
-    console.log(newCheckedState);
-    this.setState(newCheckedState);
-    console.log(this.state.checked);
-    localStorage.setItem('checkedStatus', JSON.stringify(this.state.checked));
+    localStorage.setItem('checkedStatus', JSON.stringify(newUnderSelection));
     if (this.state.selectedRecipeIndex[input]) {
       delete updatedSelection[input];
       this.setState({
@@ -120,10 +139,10 @@ var MainSection = React.createClass({
           recipes={this.state.recipes}
           handleSelection={this.handleRecipeSelection}
           selectedRecipes={this.state.selectedRecipeIndex}
+          checked={this.state.checked}
         />
         <CombinationIngredientList
           comboIngredients={this.state.totalIngredients}
-          checked={this.state.checked}
         />
       </div>
     )

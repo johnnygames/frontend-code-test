@@ -3,7 +3,6 @@ var IngredientList = require('./IngredientList.js');
 
 var RecipeItem = React.createClass({
   handleClick: function (ingredients, index) {
-    var index = 'item' + index;
     this.props.nextLevelProp(index, ingredients);
   },
   render: function () {
@@ -14,7 +13,7 @@ var RecipeItem = React.createClass({
         <input
           type="checkbox"
           onChange={this.handleClick.bind(null, this.props.recipeInfo.ingredients, this.props.indexRecipe)}
-          checked={checkedStatus}
+          defaultChecked={checkedStatus}
         >
         </input>
       <h4 ref={this.props.indexRecipe}>
@@ -23,7 +22,7 @@ var RecipeItem = React.createClass({
         {this.props.recipeInfo.cook_time}
       </h4>
       {
-        this.props.selectionIndex[this.props.indexRecipe] && <IngredientList ingredients={this.props.recipeInfo.ingredients} />
+        checkedStatus && <IngredientList ingredients={this.props.recipeInfo.ingredients} />
       }
       </span>
     );

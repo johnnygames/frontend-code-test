@@ -23,7 +23,7 @@ var RecipeList = React.createClass({
                   indexRecipe={index}
                   nextLevelProp={newSelection}
                   selectionIndex={recipeIndex}
-                  checked={checked}
+                  checked={checked[index]}
                 />
             </li>
             )
