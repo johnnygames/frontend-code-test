@@ -6,7 +6,7 @@ module.exports = {
     alias: {},
     extensions: ['', '.jsx', '.js']
   },
-  entry: ['bootstrap-webpack!./bootstrap.config.js', 'webpack/hot/dev-server', path.resolve(__dirname, 'app/app.js')],
+  entry: ['webpack/hot/dev-server', path.resolve(__dirname, 'app/app.js')],
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: "bundle.js"

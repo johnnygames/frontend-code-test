@@ -10,11 +10,12 @@ var MainSection = React.createClass({
       recipes: [],
       selectedRecipeIndex: {},
       totalIngredients: {},
-      checked: {0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7:false}
+      checked: {item0: false, item1: false, item2: false, item3: false, item4: false, item5: false, item6: false, item7:false}
     }
   },
   componentDidMount: function () {
     var self = this;
+    localStorage.setItem('checkedStatus', this.state.checked);
     localStorage.setItem('checkedStatus', JSON.stringify(this.state.checked));
     if (!JSON.parse(localStorage.getItem('recipeListPersist')).recipes.length > 0) {
       $.getJSON('recipes.json', function (data) {
@@ -91,7 +92,10 @@ var MainSection = React.createClass({
     var newCheckedState = React.addons.update(this.state.checked, {
       input: {$set: !this.state.checked[input]}
     });
+    console.log(newCheckedState);
     this.setState(newCheckedState);
+    console.log(this.state.checked);
+    localStorage.setItem('checkedStatus', JSON.stringify(this.state.checked));
     if (this.state.selectedRecipeIndex[input]) {
       delete updatedSelection[input];
       this.setState({
