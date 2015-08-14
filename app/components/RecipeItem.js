@@ -2,7 +2,9 @@ var React = require('react');
 var IngredientList = require('./IngredientList.js');
 
 var RecipeItem = React.createClass({
-  handleClick: function (ingredients, index) {
+  handleClick: function (event, ingredients, index) {
+    event.preventDefault();
+    event.stopPropagation();
     this.props.nextLevelProp(index, ingredients);
   },
   render: function () {
@@ -12,7 +14,7 @@ var RecipeItem = React.createClass({
       <span>
         <input
           type="checkbox"
-          onChange={this.handleClick.bind(null, this.props.recipeInfo.ingredients, this.props.indexRecipe)}
+          onChange={this.handleClick.bind(null, event, this.props.recipeInfo.ingredients, this.props.indexRecipe)}
           defaultChecked={checkedStatus}
         >
         </input>

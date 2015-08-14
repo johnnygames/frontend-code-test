@@ -51,44 +51,46 @@ var MainSection = React.createClass({
     localStorage.setItem('textInput', JSON.stringify({textInputLocal: input}));
   },
   updateIngredients: function (input, ingredientArray) {
+    var localStoreCompareCheck = JSON.parse(localStorage.getItem('totalIngredientList')).list;
+    if (JSON.stringify(localStoreCompareCheck) !== JSON.stringify(this.state.totalIngredients)) {
+      localStorage.setItem('totalIngredientList', JSON.stringify(this.state.totalIngredients));
+        }
     //If the recipe that is clicked on already exists in the list aka is being currently UNSELECTED
     if (JSON.parse(localStorage.getItem('checkedStatus'))[input]) {
-      console.log(JSON.parse(localStorage.getItem('checkedStatus'))[input], 'is this true of false, first test');
       //If the clicked on recipe is the only one in the list just remove all
       var checkCounter = 0;
       for (var key in JSON.parse(localStorage.getItem('checkedStatus'))) {
         if (JSON.parse(localStorage.getItem('checkedStatus'))[key]) {
-          console.log('yay true');
           checkCounter++;
         }
       }
       if (checkCounter <= 1) {
-        console.log(checkCounter, 'length of 1');
         var currentIngredientsOne = this.state.totalIngredients;
         var currentIngredientsPersistent = JSON.parse(localStorage.getItem('totalIngredientList')).list;
-        console.log(currentIngredientsPersistent, 'persistent');
         for (var k = 0; k < ingredientArray.length; k++) {
           delete currentIngredientsOne[ingredientArray[k]];
-          //delete currentIngredientsPersistent[ingredientArray[k]];
         }
         localStorage.setItem('totalIngredientList', JSON.stringify({list: currentIngredients}));
         return;
       }
-      console.log(checkCounter, 'length greater than 1');
       var currentIngredients = this.state.totalIngredients;
+      var checkedStatusObject = JSON.parse(localStorage.getItem('checkedStatus'));
       //Loop through here necessary to check if other recipes require an ingredient we're supposed to get rid of
       for (var i = 0; i < ingredientArray.length; i++) {
-        console.log('do we get into this for loop');
-        for (var j = 0; j < Object.keys(JSON.parse(localStorage.getItem('checkedStatus'))).length; j++) {
-          if (JSON.parse(localStorage.getItem('checkedStatus'))[j]) {
-           if (this.state.recipes[j].ingredients.indexOf(ingredientArray[i]) >= 0) {
-             console.log(this.state.recipes[j].ingredients, 'j ', j);
-             continue;
-          } else {
-            delete currentIngredients[ingredientArray[i]];
-            //            delete currentIngredientsPersistent[ingredientArray[j]];
+        var exists = false;
+        var currentIngredient = ingredientArray[i];
+        for (var j = 0; j < Object.keys(checkedStatusObject).length; j++) {
+          if (checkedStatusObject[j]) {
+            if (this.state.recipes[j].ingredients.indexOf(currentIngredient) >= 0 && j !== input) {
+              exists = true;
+              break;
+            } else {
+              continue;
             }
           }
+        }
+        if (!exists) {
+          delete currentIngredients[currentIngredient];
         }
       }
       this.setState({
@@ -96,7 +98,6 @@ var MainSection = React.createClass({
       })
       localStorage.setItem('totalIngredientList', JSON.stringify({list: currentIngredients}));
     } else {
-      console.log('this is the else statement, if the checkedStatus was false');
         var ingredientObject = this.state.totalIngredients;
         for (var i = 0; i < ingredientArray.length; i++) {
           ingredientObject[ingredientArray[i]] = true;
