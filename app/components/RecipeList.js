@@ -8,13 +8,14 @@ var RecipeList = React.createClass({
     var checked = this.props.checked;
     var self = this;
     var style = {
-      width: '50%',
+      width: '40%',
       float: 'left'
     };
+    console.log(checked);
     return (
-      <div style={style}>
+      <div style={style} className="recipeList">
         <h2>Recipe List!</h2>
-        <ol>
+        <ul>
           {this.props.recipes.map(function (recipe, index) {
             return (
               <li>
@@ -29,7 +30,7 @@ var RecipeList = React.createClass({
             )
           })
           }
-        </ol>
+        </ul>
       </div>
     );
   }

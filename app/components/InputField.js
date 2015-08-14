@@ -13,7 +13,7 @@ var InputField = React.createClass({
     return (
     <div>
       <form onSubmit={this.handleIngredientInput}>
-        Please insert a ingredient you would like to filter on! <input type="text" name="filter" id="ingredientToFilter"></input>
+        What's in mystery basket number one?! <input type="text" name="filter" id="ingredientToFilter"></input>
       </form>
     </div>
     );

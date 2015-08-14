@@ -13,14 +13,12 @@ var RecipeItem = React.createClass({
         <input
           type="checkbox"
           onChange={this.handleClick.bind(null, this.props.recipeInfo.ingredients, this.props.indexRecipe)}
-          defaultChecked={checkedStatus}
+          checked={this.props.checked}
         >
         </input>
-      <h4 ref={this.props.indexRecipe}>
-        {this.props.recipeInfo.name}
-        {this.props.recipeInfo.type}
-        {this.props.recipeInfo.cook_time}
-      </h4>
+      <span ref={this.props.indexRecipe}>
+        <span>Name: </span><strong>{this.props.recipeInfo.name}</strong>
+      </span>
       {
         checkedStatus && <IngredientList ingredients={this.props.recipeInfo.ingredients} />
       }

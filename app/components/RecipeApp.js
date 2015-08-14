@@ -5,6 +5,9 @@ var RecipeApp = React.createClass({
   render() {
     return (
       <div>
+        <header>
+          <h1>Definitive Chopped Cheatsheet</h1>
+        </header>
         <MainSection />
       </div>
     )

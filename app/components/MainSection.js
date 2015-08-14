@@ -52,13 +52,12 @@ var MainSection = React.createClass({
         recipes: filteredRecipes
       });
     }
-    this.setState({
-      totalIngredients: {}
+    var unChecked = {0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false};
+    self.setState({
+      totalIngredients: {},
+      checked: unChecked
     });
-    this.setState({
-      checked: {0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false}
-    });
-    localStorage.setItem('checkedStatus', JSON.stringify(this.state.checked));
+    localStorage.setItem('checkedStatus', JSON.stringify(unChecked));
     localStorage.setItem('ingredientListTotal', JSON.stringify({list: {}}));
     localStorage.setItem('recipeListPersist', JSON.stringify({recipes: filteredRecipes}));
     localStorage.setItem('textInput', JSON.stringify({textInputLocal: input}));
