@@ -13,7 +13,7 @@ var RecipeItem = React.createClass({
         <input
           type="checkbox"
           onChange={this.handleClick.bind(null, this.props.recipeInfo.ingredients, this.props.indexRecipe)}
-          checked={this.props.checked}
+          checked={checkedStatus}
         >
         </input>
       <span ref={this.props.indexRecipe}>

@@ -7,7 +7,18 @@ var CombinationIngredientList = require('./CombinationIngredientList.js');
 
 var MainSection = React.createClass({
   getInitialState: function () {
-    return {
+    var initialRecipes = [];
+    $.getJSON('recipes.json', function (data) {
+      initialRecipes = data;
+    });
+    if (localStorage.getItem('checkedStatus') === null) {
+      var firstChecked = {0: false, 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7:false};
+      localStorage.setItem('checkedStatus', JSON.stringify(firstChecked));
+      localStorage.setItem('ingredientListTotal', JSON.stringify({}));
+      localStorage.setItem('textInput', JSON.stringify({textInputLocal: ''}));
+      localStorage.setItem('recipeListPersist', JSON.stringify({recipes: initialRecipes}));
+    }
+     return {
       recipes: [],
       selectedRecipeIndex: {},
       totalIngredients: {},
@@ -27,9 +38,9 @@ var MainSection = React.createClass({
         recipes: JSON.parse(localStorage.getItem('recipeListPersist')).recipes
       });
     }
-    if(!!JSON.parse(localStorage.getItem('totalIngredientList')).list) {
+    if(!!JSON.parse(localStorage.getItem('ingredientListTotal'))) {
       self.setState({
-        totalIngredients: JSON.parse(localStorage.getItem('totalIngredientList')).list
+        totalIngredients: JSON.parse(localStorage.getItem('ingredientListTotal'))
       });
     }
   },
@@ -58,14 +69,15 @@ var MainSection = React.createClass({
       checked: unChecked
     });
     localStorage.setItem('checkedStatus', JSON.stringify(unChecked));
-    localStorage.setItem('ingredientListTotal', JSON.stringify({list: {}}));
+    localStorage.setItem('ingredientListTotal', JSON.stringify({}));
     localStorage.setItem('recipeListPersist', JSON.stringify({recipes: filteredRecipes}));
     localStorage.setItem('textInput', JSON.stringify({textInputLocal: input}));
   },
   updateIngredients: function (input, ingredientArray) {
-    var localStoreCompareCheck = JSON.parse(localStorage.getItem('totalIngredientList')).list;
+    console.log(localStorage.getItem('ingredientListTotal'));
+    var localStoreCompareCheck = localStorage.getItem('ingredientListTotal');
     if (JSON.stringify(localStoreCompareCheck) !== JSON.stringify(this.state.totalIngredients)) {
-      localStorage.setItem('totalIngredientList', JSON.stringify(this.state.totalIngredients));
+      localStorage.setItem('ingedientListTotal', JSON.stringify(this.state.totalIngredients));
         }
     //If the recipe that is clicked on already exists in the list aka is being currently UNSELECTED
     if (JSON.parse(localStorage.getItem('checkedStatus'))[input]) {
@@ -78,11 +90,11 @@ var MainSection = React.createClass({
       }
       if (checkCounter <= 1) {
         var currentIngredientsOne = this.state.totalIngredients;
-        var currentIngredientsPersistent = JSON.parse(localStorage.getItem('totalIngredientList')).list;
+        var currentIngredientsPersistent = JSON.parse(localStorage.getItem('ingredientListTotal'));
         for (var k = 0; k < ingredientArray.length; k++) {
           delete currentIngredientsOne[ingredientArray[k]];
         }
-        localStorage.setItem('totalIngredientList', JSON.stringify({list: currentIngredients}));
+        localStorage.setItem('ingredientListTotal', JSON.stringify(currentIngredients));
         return;
       }
       var currentIngredients = this.state.totalIngredients;
@@ -108,7 +120,7 @@ var MainSection = React.createClass({
       this.setState({
         totalIngredients: currentIngredients
       })
-      localStorage.setItem('totalIngredientList', JSON.stringify({list: currentIngredients}));
+      localStorage.setItem('ingredientListTotal', JSON.stringify(currentIngredients));
     } else {
         var ingredientObject = this.state.totalIngredients;
         for (var i = 0; i < ingredientArray.length; i++) {
@@ -117,7 +129,7 @@ var MainSection = React.createClass({
         this.setState({
           totalIngredients: ingredientObject
         })
-        localStorage.setItem('totalIngredientList', JSON.stringify({list: ingredientObject}));
+        localStorage.setItem('ingredientListTotal', JSON.stringify(ingredientObject));
     }
   },
   updateSelection: function (input) {
