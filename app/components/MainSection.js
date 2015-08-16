@@ -4,6 +4,7 @@ var _ = require('underscore');
 var RecipeList = require('./RecipeList.js');
 var InputField = require('./InputField.js');
 var CombinationIngredientList = require('./CombinationIngredientList.js');
+var helpers = require('../utils/getDataAPI.js');
 
 var MainSection = React.createClass({
   getInitialState: function () {
@@ -14,9 +15,10 @@ var MainSection = React.createClass({
   componentDidMount: function () {
     var self = this;
     if (localStorage.getItem('localRecipes') === null) {
-      $.getJSON('recipes.json', function (data) {
+      helpers.getRecipes()
+      .then(function (data) {
         self.setState({
-          recipes: self.extendRecipeObject(data)
+          recipes: self.extendRecipeObject(data.data)
         });
       });
     } else {
@@ -37,14 +39,15 @@ var MainSection = React.createClass({
     var recipesAfterNoInput = [];
     var self = this;
     if (!input) {
-      $.getJSON('recipes.json', function (data) {
-        recipesAfterNoInput = self.extendRecipeObject(data);
-        self.setState({
-          recipes: recipesAfterNoInput
+      helpers.getRecipes()
+        .then(function (data) {
+          recipesAfterNoInput = self.extendRecipeObject(data.data);
+          self.setState({
+            recipes: recipesAfterNoInput
+          });
+          localStorage.setItem('textInput', JSON.stringify({textInputLocal: ''}));
+          localStorage.setItem('localRecipes', JSON.stringify({recipes: recipesAfterNoInput}));
         });
-        localStorage.setItem('textInput', JSON.stringify({textInputLocal: ''}));
-        localStorage.setItem('localRecipes', JSON.stringify({recipes: recipesAfterNoInput}));
-      });
       return;
     }
     var filteredRecipes = this.state.recipes.map(function (recipe, index) {
