@@ -2,25 +2,23 @@ var React = require('react');
 var IngredientList = require('./IngredientList.js');
 
 var RecipeItem = React.createClass({
-  handleClick: function (ingredients, index) {
-    this.props.nextLevelProp(index, ingredients);
+  handleClick: function (recipeName) {
+    this.props.handleSelection(recipeName);
   },
   render: function () {
-    var index = this.props.indexRecipe;
-    var checkedStatus = JSON.parse(localStorage.getItem('checkedStatus'))[index];
     return (
       <span>
         <input
           type="checkbox"
-          onChange={this.handleClick.bind(null, this.props.recipeInfo.ingredients, this.props.indexRecipe)}
-          checked={checkedStatus}
+          onChange={this.handleClick.bind(null, this.props.recipeInfo.name)}
+          checked={this.props.checked}
         >
         </input>
-      <span ref={this.props.indexRecipe}>
+      <span>
         <span>Name: </span><strong>{this.props.recipeInfo.name}</strong>
       </span>
       {
-        checkedStatus && <IngredientList ingredients={this.props.recipeInfo.ingredients} />
+        this.props.checked && <IngredientList ingredients={this.props.recipeInfo.ingredients} />
       }
       </span>
     );
@@ -28,4 +26,3 @@ var RecipeItem = React.createClass({
 });
 
 module.exports = RecipeItem;
-//onClick={this.handleClick.bind(null, this.props.recipeInfo.ingredients, this.props.indexRecipe)}
