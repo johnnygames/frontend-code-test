@@ -15,17 +15,19 @@ var CombinationIngredientList = React.createClass({
   render: function () {
     var listOfIngredients = this.createIngredientList(this.props.recipes);
     var style = {
-      width: '40%',
+      width: '48%',
       float: 'right'
     };
     return (
       <div style={style} className="ingredientList">
         <h2>Total Ingredient List!</h2>
-        {
-          Object.keys(listOfIngredients).sort().map(function (ingredient) {
-            return <li>{ingredient}</li>;
-          })
-        }
+        <ul>
+          {
+            Object.keys(listOfIngredients).sort().map(function (ingredient) {
+              return <li>{ingredient}</li>;
+            })
+          }
+        </ul>
     </div>
     );
   }

@@ -8,7 +8,7 @@ var RecipeList = React.createClass({
       });
       var handleSelection = this.props.handleSelection;
       var style = {
-        width: '40%',
+        width: '50%',
         float: 'left'
       };
       return (

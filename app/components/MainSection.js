@@ -1,5 +1,4 @@
 var React = require('react/addons');
-var $ = require('jquery');
 var _ = require('underscore');
 var RecipeList = require('./RecipeList.js');
 var InputField = require('./InputField.js');

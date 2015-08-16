@@ -15,7 +15,7 @@ var RecipeItem = React.createClass({
         >
         </input>
       <span>
-        <span>Name: </span><strong>{this.props.recipeInfo.name}</strong>
+        <span className="name">Name: </span><strong>{this.props.recipeInfo.name}</strong>
       </span>
       {
         this.props.checked && <IngredientList ingredients={this.props.recipeInfo.ingredients} />
