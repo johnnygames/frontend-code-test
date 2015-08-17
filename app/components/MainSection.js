@@ -82,12 +82,10 @@ var MainSection = React.createClass({
   render: function () {
     return (
       <div>
-        <InputField handleInput={this.handleInput} textInputPersist={this.state.textInput}/>
+        <InputField handleInput={this.handleInput} />
         <RecipeList
           recipes={this.state.recipes}
           handleSelection={this.updateSelection}
-          selectedRecipes={this.state.selectedRecipeIndex}
-          checked={this.state.checked}
         />
         <CombinationIngredientList
           recipes={this.state.recipes}
